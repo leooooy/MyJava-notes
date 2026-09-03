@@ -1,0 +1,31 @@
+name: Publish filtered source to public repo
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    # 只在私有底稿库里运行；推到公开库后此 workflow 也会被带过去，但仓库判定会让它在那边不触发
+    if: ${{ github.repository == 'leooooy/MyJava' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Strip private modules (Project / Interview)
+        run: bash scripts/filter-public.sh
+
+      - name: Force-push clean snapshot to MyJava-notes
+        env:
+          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # 丢掉原始历史，重建为单提交快照 —— 保证 Project/Interview 永不进入公开库历史
+          rm -rf .git
+          git init -q -b master
+          git add -A
+          git commit -q -m "Publish filtered snapshot from ${GITHUB_REPOSITORY}@${GITHUB_SHA:0:7}"
+          git remote add public "https://x-access-token:${PUBLISH_TOKEN}@github.com/leooooy/MyJava-notes.git"
+          git push --force public master
