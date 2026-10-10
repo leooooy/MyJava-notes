@@ -1,0 +1,20 @@
+{
+  "plugins": ["expandable-chapters-small", "anchor-navigation-ex"],
+  "pluginsConfig": {
+    "anchor-navigation-ex": {
+      "showLevel": false,
+      "showLevelIcon": false,
+      "associatedWithSummary": false,
+      "printLog": false,
+      "multipleH1": false,
+      "mode": "float",
+      "float": {
+        "floatIcon": "fa fa-anchor",
+        "showLevelIcon": false,
+        "level1Icon": "fa fa-hand-o-right",
+        "level2Icon": "fa fa-hand-o-right",
+        "level3Icon": "fa fa-hand-o-right"
+      }
+    }
+  }
+}
